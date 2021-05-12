@@ -3,14 +3,14 @@ from Shor import ShorCircuit, PostProcess
 from qiskit import IBMQ, QuantumCircuit, assemble, transpile, Aer
 from qiskit.visualization import plot_histogram
 
-def Simulate:
+def Simulate():
     qasm_sim = Aer.get_backend('qasm_simulator')
     t_qc = transpile(ShorCircuit(), qasm_sim)
     qobj = assemble(t_qc)
     results = qasm_sim.run(qobj).result()
     PostProcess(results.get_counts())
 
-def Excecute:
+def Excecute():
     provider = IBMQ.enable_account(GetCredi())  #API Token in file ignored by git
     backend = provider.get_backend("ibmq_16_melbourne") #only melbourne fits the circuit
 
@@ -19,6 +19,9 @@ def Excecute:
 
     job = backend.run(testcircuit)
     print(job.job_id)
+    return job.job_id
 
+
+def PostExcecute(jobID):
     print(job.result())
     PostProcess(job.result.get_counts())
