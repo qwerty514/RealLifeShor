@@ -33,7 +33,7 @@ def ExecuteAll(n):
             records.append([a,jobID])
     
     df = pd.DataFrame(records,columns=["a","jobID"])
-    path = "JobIDs/record" + str(n)
+    path = "JobIDs/record" + str(n) + ".csv"
     df.to_csv(path,ignore_index=True)
 
 # Take a job_id, get the results from IBMQ
