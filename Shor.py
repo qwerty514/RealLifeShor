@@ -6,13 +6,13 @@
 from QuantumFourierTransform import QFT
 from ControlledMultiplication import c_amod15
 from qiskit import QuantumCircuit, Aer, transpile, assemble
-from qiskit.visualization import plot_histogram
 from fractions import Fraction
 import pandas as pd
 
-def ShorCircuit():
+# a must e 2, 7, 8, 11, 13
+
+def ShorCircuit(a = 7):
     n_count = 8  # number of counting qubits
-    a = 7
 
     qc = QuantumCircuit(n_count + 4, n_count)
 
@@ -56,8 +56,3 @@ def PostProcess(resultCounts):
     df = pd.DataFrame(rows, columns=headers)
     #print(df) to see the final results
 
-qasm_sim = Aer.get_backend('qasm_simulator')
-t_qc = transpile(ShorCircuit(), qasm_sim)
-qobj = assemble(t_qc)
-results = qasm_sim.run(qobj).result()
-counts = results.get_counts()
