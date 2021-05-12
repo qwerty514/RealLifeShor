@@ -33,7 +33,7 @@ def ExecuteAll(n):
     records = []
     for a in guesses:
         for _ in range(3):
-            jobID = Execute(a)
+            jobID = Excecute(a)
             records.append([a,jobID])
     
     df = pd.DataFrame(records,columns=["a","jobID"])
