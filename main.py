@@ -2,6 +2,7 @@ from credi import GetCredi
 from Shor import ShorCircuit, PostProcess
 from qiskit import IBMQ, QuantumCircuit, assemble, transpile, Aer
 from qiskit.visualization import plot_histogram
+import pandas as pd
 
 provider = None
 backend = None
@@ -27,6 +28,17 @@ def Excecute(a=7):
     print(job.job_id)
     return job.job_id
 
+def ExecuteAll(n):
+    guesses = [2,7,8,11,13]
+    records = []
+    for a in guesses:
+        for _ in range(3):
+            jobID = Execute(a)
+            records.append([a,jobID])
+    
+    df = pd.DataFrame(records,columns=["a","jobID"])
+    path = "JobIDs/record" + str(n) + ".csv"
+    df.to_csv(path,ignore_index=True)
 
 # Take a job_id, get the results from IBMQ
 # Returns results of the job!
