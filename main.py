@@ -3,9 +3,8 @@ from Shor import ShorCircuit, PostProcess
 from qiskit import IBMQ, QuantumCircuit, assemble, transpile, Aer
 from qiskit.visualization import plot_histogram
 import pandas as pd
+from pathlib import Path
 
-provider = None
-backend = None
 
 # Simulate a Shor circuit for a given a, return results immediately
 def Simulate(a=7):
@@ -14,39 +13,48 @@ def Simulate(a=7):
     qobj = assemble(t_qc)
     return qasm_sim.run(qobj).result()
 
+
 # Take an a, generate circuit and run this on IBMQ
 # Job ID of the job on IBMQ
-def Excecute(a=7):
-    if Excecute.backend is None:
-        Excecute.provider = IBMQ.enable_account(GetCredi())  #API Token in file ignored by git
-        Excecute.backend = provider.get_backend("ibmq_16_melbourne") #only melbourne fits the circuit
+def Execute(a=7):
+    if Execute.backend is None:
+        Execute.provider = IBMQ.enable_account(GetCredi())  # API Token in file ignored by git
+        Execute.backend = Execute.provider.get_backend("ibmq_16_melbourne")  # only melbourne fits the circuit
 
     testcircuit = ShorCircuit(a)
-    testcircuit = transpile(testcircuit, backend)
+    testcircuit = transpile(testcircuit, Execute.backend)
 
-    job = Excecute.backend.run(testcircuit)
+    job = Execute.backend.run(testcircuit)
     print(job.job_id)
     return job.job_id
 
-def ExecuteAll(n):
-    guesses = [2, 7, 8, 11, 13]
-    records = []
-    for a in guesses:
-        for _ in range(3):
-            jobID = Excecute(a)
-            records.append([a, jobID])
-    
-    df = pd.DataFrame(records, columns=["a", "jobID"])
+
+def ExecuteAll(n, a):
+    if a not in [2, 7, 8, 11, 13]:
+        exit(1)
+
     path = "JobIDs/record" + str(n) + ".csv"
+    if Path(path).is_file():
+        df = pd.read_csv(path)
+    else:
+        df = pd.DataFrame(columns=["a", "jobID"])
+
+    records = []
+    for _ in range(3):
+        jobID = Execute(a)
+        df.append({"a": a, "jobID": jobID}, ignore_index=True)
+
     df.to_csv(path, ignore_index=True)
+
 
 # Take a job_id, get the results from IBMQ
 # Returns results of the job!
 def RetrieveResult(jobID):
     if RetrieveResult.backend is None:
-        RetrieveResult.provider = IBMQ.enable_account(GetCredi())  #API Token in file ignored by git
-        RetrieveResult.backend = RetrieveResult.get_backend("ibmq_16_melbourne") #only melbourne fits the circuit
+        RetrieveResult.provider = IBMQ.enable_account(GetCredi())  # API Token in file ignored by git
+        RetrieveResult.backend = RetrieveResult.get_backend("ibmq_16_melbourne")  # only melbourne fits the circuit
     return RetrieveResult.backend.retrieve_job(jobID).result()
+
 
 def RetrieveAll(n):
     path = "JobIDs/record" + str(n) + ".csv"
@@ -56,5 +64,7 @@ def RetrieveAll(n):
         print(df[ID][0])
         print(RetrieveResult(ID))
 
+Execute.provider = None
+Execute.backend = None
 
-
+ExecuteAll(1, 2)
