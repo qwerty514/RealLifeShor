@@ -33,7 +33,6 @@ aArray = [2, 7, 8, 11, 13]
 def ExecuteAll(n, a, amount):
     if a not in aArray:
         exit(1)
-
     path = "JobIDs/record" + str(n) + ".csv"
     if Path(path).is_file():
         df = pd.read_csv(path)
