@@ -28,9 +28,10 @@ def Execute(a=7):
     print(job.job_id)
     return job.job_id
 
+aArray = [2, 7, 8, 11, 13]
 
-def ExecuteAll(n, a):
-    if a not in [2, 7, 8, 11, 13]:
+def ExecuteAll(n, a, amount):
+    if a not in aArray:
         exit(1)
 
     path = "JobIDs/record" + str(n) + ".csv"
@@ -39,12 +40,11 @@ def ExecuteAll(n, a):
     else:
         df = pd.DataFrame(columns=["a", "jobID"])
 
-    records = []
-    for _ in range(3):
+    for _ in range(amount):
         jobID = Execute(a)
-        df.append({"a": a, "jobID": jobID}, ignore_index=True)
+        df = df.append({"a": a, "jobID": jobID}, ignore_index=True)
 
-    df.to_csv(path, ignore_index=True)
+    df.to_csv(path)
 
 
 # Take a job_id, get the results from IBMQ
@@ -67,4 +67,5 @@ def RetrieveAll(n):
 Execute.provider = None
 Execute.backend = None
 
-ExecuteAll(1, 2)
+for a in aArray:
+    ExecuteAll(1, a, 1)
