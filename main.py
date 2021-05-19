@@ -7,11 +7,15 @@ from pathlib import Path
 
 
 # Simulate a Shor circuit for a given a, return results immediately
-def Simulate(a=7):
-    qasm_sim = Aer.get_backend('qasm_simulator')
+def Simulate(a=7, model='qasm_simulator'):
+    qasm_sim = Aer.get_backend(model)
     t_qc = transpile(ShorCircuit(a), qasm_sim)
     qobj = assemble(t_qc)
     return qasm_sim.run(qobj).result()
+
+
+def SimulateAll():
+    print("dsaf")
 
 
 # Take an a, generate circuit and run this on IBMQ
@@ -68,5 +72,3 @@ Execute.backend = None
 
 print(Simulate(7))
 
-#for a in aArray:
-    #ExecuteAll(1, a, 1)

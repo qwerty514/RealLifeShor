@@ -41,7 +41,7 @@ def ShorCircuit(a = 7):
 #plot_histogram(counts) Do this to see a histogram of the counts
 
 
-def PostProcess(results):
+def PostProcess(results, a, iterationID):
     resultCounts = results.get_counts()
     n_count = 8  # number of counting qubits
     measured_phases = []
