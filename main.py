@@ -13,9 +13,8 @@ def Simulate(a=7, model='qasm_simulator'):
     qobj = assemble(t_qc)
     return qasm_sim.run(qobj).result()
 
-
 def SimulateAll():
-    print("dsaf")
+    for a in 
 
 
 # Take an a, generate circuit and run this on IBMQ
