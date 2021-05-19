@@ -66,5 +66,7 @@ def RetrieveAll(n):
 Execute.provider = None
 Execute.backend = None
 
-for a in aArray:
-    ExecuteAll(1, a, 1)
+print(Simulate(7))
+
+#for a in aArray:
+    #ExecuteAll(1, a, 1)
