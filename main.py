@@ -1,20 +1,39 @@
 from credi import GetCredi
 from Shor import ShorCircuit, PostProcess
-from qiskit import IBMQ, QuantumCircuit, assemble, transpile, Aer
-from qiskit.visualization import plot_histogram
+from qiskit import IBMQ, QuantumCircuit, assemble, transpile, Aer, execute
+from qiskit.providers.aer import AerSimulator
+from qiskit.providers.aer.noise import NoiseModel
+
 import pandas as pd
 from pathlib import Path
 
 
 # Simulate a Shor circuit for a given a, return results immediately
-def Simulate(a=7, model='qasm_simulator'):
-    qasm_sim = Aer.get_backend(model)
-    t_qc = transpile(ShorCircuit(a), qasm_sim)
-    qobj = assemble(t_qc)
-    return qasm_sim.run(qobj).result()
+def Simulate(a=7, model=None):
 
-def SimulateAll():
-    for a in 
+    if model is not None:
+        provider = IBMQ.enable_account(GetCredi())  # API Token in file ignored by git
+        backend = provider.get_backend(model)
+        noiseModel = NoiseModel.from_backend(backend)
+        #simul = AerSimulator(noise_model=noiseModel)
+        coupling = backend.configuration().coupling_map
+        basisGates = noiseModel.basis_gates
+        return execute(ShorCircuit(a), Aer.get_backend('qasm_simulator'),
+                        coupling_map=coupling,
+                        basis_gates=basisGates,
+                        noise_model=noiseModel).result()
+        return simul.run(ShorCircuit(a)).result()
+    else:
+        qasm_sim = Aer.get_backend('qasm_simulator')
+        t_qc = transpile(ShorCircuit(a), qasm_sim)
+        qobj = assemble(t_qc)
+        return qasm_sim.run(qobj).result()
+
+
+def SimulateAll(tryID):
+    for a in aArray:
+        PostProcess(Simulate(a, "ibmq_16_melbourne"), a, tryID, "ibmq_16_melbourne")
+        PostProcess(Simulate(a, "qasm_simulator"), a, tryID, "qasm_simulator")
 
 
 # Take an a, generate circuit and run this on IBMQ
@@ -30,8 +49,6 @@ def Execute(a=7):
     job = Execute.backend.run(testcircuit)
     print(job.job_id)
     return job.job_id
-
-aArray = [2, 7, 8, 11, 13]
 
 def ExecuteAll(n, a, amount):
     if a not in aArray:
@@ -69,5 +86,7 @@ def RetrieveAll(n):
 Execute.provider = None
 Execute.backend = None
 
-print(Simulate(7))
+aArray = [2, 7, 8, 11, 13]
+
+Simulate(7,"ibmq_16_melbourne")
 
