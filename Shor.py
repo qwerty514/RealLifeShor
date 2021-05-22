@@ -1,4 +1,4 @@
-#file: main.py
+#file: Shor.py
 #authors: Kamiel Fokkink, Bram Mak
 
 #This code implements Shors algorithm
@@ -38,10 +38,7 @@ def ShorCircuit(a = 7):
 
     return qc
 
-#plot_histogram(counts) Do this to see a histogram of the counts
-
-
-def PostProcess(results, a, iterationID, model):
+def PostProcess(results, a):
     resultCounts = results.get_counts()
     n_count = 8  # number of counting qubits
     measured_phases = []
@@ -53,8 +50,8 @@ def PostProcess(results, a, iterationID, model):
     rows = []
     for phase in measured_phases:
         frac = Fraction(phase).limit_denominator(15)
-        rows.append([phase, f"{frac.numerator}/{frac.denominator}", frac.denominator])
+        #rows.append([phase, f"{frac.numerator}/{frac.denominator}", frac.denominator])
+        rows.append([phase, str(frac.numerator)+"/"+str(frac.denominator), frac.denominator])
     headers=["Phase", "Fraction", "Guess for r"]
     df = pd.DataFrame(rows, columns=headers)
-    #print(df) to see the final results
-
+    return df, resultCounts

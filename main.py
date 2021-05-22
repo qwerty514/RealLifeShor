@@ -1,6 +1,8 @@
 from credi import GetCredi
 from Shor import ShorCircuit, PostProcess
+from visualize import makeBarPlots, guessFactors
 from qiskit import IBMQ, QuantumCircuit, assemble, transpile, Aer, execute
+from qiskit.visualization import plot_histogram
 from qiskit.providers.aer import AerSimulator
 from qiskit.providers.aer.noise import NoiseModel
 
@@ -22,19 +24,24 @@ def Simulate(a=7, model=None):
                         coupling_map=coupling,
                         basis_gates=basisGates,
                         noise_model=noiseModel).result()
-        return simul.run(ShorCircuit(a)).result()
+        #return simul.run(ShorCircuit(a)).result()
     else:
         qasm_sim = Aer.get_backend('qasm_simulator')
         t_qc = transpile(ShorCircuit(a), qasm_sim)
         qobj = assemble(t_qc)
         return qasm_sim.run(qobj).result()
 
-
-def SimulateAll(tryID):
+# Run Shor circuit for multiple guesses of a, and save the results as bar charts
+# and tables
+def SimulateAll():
+    results = dict()
     for a in aArray:
-        PostProcess(Simulate(a, "ibmq_16_melbourne"), a, tryID, "ibmq_16_melbourne")
-        PostProcess(Simulate(a, "qasm_simulator"), a, tryID, "qasm_simulator")
-
+        df, counts = PostProcess(Simulate(a),a)
+        results[a] = counts
+        guessFactors(df,a,15)
+        #PostProcess(Simulate(a, "ibmq_16_melbourne"), a)
+        #PostProcess(Simulate(a, "qasm_simulator"), a)
+    makeBarPlots(results)
 
 # Take an a, generate circuit and run this on IBMQ
 # Job ID of the job on IBMQ
@@ -88,5 +95,4 @@ Execute.backend = None
 
 aArray = [2, 7, 8, 11, 13]
 
-Simulate(7,"ibmq_16_melbourne")
-
+#Simulate(7,"ibmq_16_melbourne")
