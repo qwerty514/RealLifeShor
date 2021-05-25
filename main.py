@@ -34,14 +34,20 @@ def Simulate(a=7, model=None):
 # Run Shor circuit for multiple guesses of a, and save the results as bar charts
 # and tables
 def SimulateAll():
-    results = dict()
+    results1 = dict()
+    results2 = dict()
     for a in aArray:
-        df, counts = PostProcess(Simulate(a),a)
-        results[a] = counts
-        guessFactors(df,a,15)
+        df1, counts1 = PostProcess(Simulate(a),a)
+        results1[a] = counts1
+        guessFactors(df1,a,15,"Simulation")
+        """Fix here to include noise model"""
+        df2, counts2 = PostProcess(Simulate(a,model=),a) 
+        results2[a] = counts2
+        guessFactors(df2,a,15,"NoiseModel")
         #PostProcess(Simulate(a, "ibmq_16_melbourne"), a)
         #PostProcess(Simulate(a, "qasm_simulator"), a)
-    makeBarPlots(results)
+    makeBarPlots(results1,results2)
+    #return results1,results2
 
 # Take an a, generate circuit and run this on IBMQ
 # Job ID of the job on IBMQ
