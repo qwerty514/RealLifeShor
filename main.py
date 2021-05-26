@@ -9,16 +9,15 @@ from qiskit.providers.aer.noise import NoiseModel
 import pandas as pd
 from pathlib import Path
 
-
 # Simulate a Shor circuit for a given a, return results immediately
 def Simulate(a=7, model=None):
-
     if model is not None:
-        provider = IBMQ.enable_account(GetCredi())  # API Token in file ignored by git
-        backend = provider.get_backend(model)
-        noiseModel = NoiseModel.from_backend(backend)
+        if Execute.backend is None:
+            Execute.provider = IBMQ.enable_account(GetCredi())  # API Token in file ignored by git
+            Execute.backend = Execute.provider.get_backend(model)  # only melbourne fits the circuit
+        noiseModel = NoiseModel.from_backend(Execute.backend)
         #simul = AerSimulator(noise_model=noiseModel)
-        coupling = backend.configuration().coupling_map
+        coupling = Execute.backend.configuration().coupling_map
         basisGates = noiseModel.basis_gates
         return execute(ShorCircuit(a), Aer.get_backend('qasm_simulator'),
                         coupling_map=coupling,
@@ -39,11 +38,11 @@ def SimulateAll():
     for a in aArray:
         df1, counts1 = PostProcess(Simulate(a),a)
         results1[a] = counts1
-        guessFactors(df1,a,15,"Simulation")
+        guessFactors(df1, a, 15, "Simulation")
         """Fix here to include noise model"""
-        df2, counts2 = PostProcess(Simulate(a,model=),a) 
+        df2, counts2 = PostProcess(Simulate(a, model="ibmq_16_melbourne"), a)
         results2[a] = counts2
-        guessFactors(df2,a,15,"NoiseModel")
+        guessFactors(df2, a, 15, "NoiseModel")
         #PostProcess(Simulate(a, "ibmq_16_melbourne"), a)
         #PostProcess(Simulate(a, "qasm_simulator"), a)
     makeBarPlots(results1,results2)
@@ -100,5 +99,7 @@ Execute.provider = None
 Execute.backend = None
 
 aArray = [2, 7, 8, 11, 13]
+
+SimulateAll()
 
 #Simulate(7,"ibmq_16_melbourne")
