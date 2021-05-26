@@ -1,0 +1,8 @@
+Phase,Fraction,Guess for r
+0.75,3/4,4
+0.25,1/4,4
+0.5,1/2,2
+0.0,0/1,1
+Most occurring estimate of r: 4
+Found factor: 3
+Found factor: 5

@@ -45,7 +45,7 @@ def SimulateAll():
         guessFactors(df2, a, 15, "NoiseModel")
         #PostProcess(Simulate(a, "ibmq_16_melbourne"), a)
         #PostProcess(Simulate(a, "qasm_simulator"), a)
-    makeBarPlots(results1,results2)
+    makeBarPlots(results1, results2)
     #return results1,results2
 
 # Take an a, generate circuit and run this on IBMQ
