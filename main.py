@@ -12,9 +12,9 @@ from pathlib import Path
 # Simulate a Shor circuit for a given a, return results immediately
 def Simulate(a=7, model=None):
     if model is not None:
-        if Execute.backend is None:
+        if Execute.provider is None:
             Execute.provider = IBMQ.enable_account(GetCredi())  # API Token in file ignored by git
-            Execute.backend = Execute.provider.get_backend(model)  # only melbourne fits the circuit
+        Execute.backend = Execute.provider.get_backend(model)  # only melbourne fits the circuit
         noiseModel = NoiseModel.from_backend(Execute.backend)
         #simul = AerSimulator(noise_model=noiseModel)
         coupling = Execute.backend.configuration().coupling_map
@@ -36,7 +36,7 @@ def SimulateAll():
     results1 = dict()
     results2 = dict()
     for a in aArray:
-        df1, counts1 = PostProcess(Simulate(a),a)
+        df1, counts1 = PostProcess(Simulate(a), a)
         results1[a] = counts1
         guessFactors(df1, a, 15, "Simulation")
         """Fix here to include noise model"""
