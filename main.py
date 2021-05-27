@@ -12,7 +12,7 @@ from pathlib import Path
 # Simulate a Shor circuit for a given a, return results immediately
 def Simulate(a=7, model=None):
     if model is not None:
-        if Execute.provider is None:
+        if Execute.provider is not None:
             Execute.provider = IBMQ.enable_account(GetCredi())  # API Token in file ignored by git
         Execute.backend = Execute.provider.get_backend(model)  # only melbourne fits the circuit
         noiseModel = NoiseModel.from_backend(Execute.backend)
